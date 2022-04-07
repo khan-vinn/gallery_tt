@@ -1,8 +1,12 @@
 <template>
+  <div class="control">
+    <input type="text" class="search" v-model="searchInput">
+    <button @click="searchPhotos()">Search</button>
+  </div>
   <div class="content">
     <div class="photos">
       <div v-for="photo  in this.randomPhotos" :key="photo">
-       <div> {{photo.user.id}} </div>
+       <div @click="addToFavourites(photo)"> {{photo.user.id}} </div>
         <img :src=photo.urls.small>
       </div>
     </div>
@@ -19,7 +23,7 @@ export default {
     return {
       randomPhotos: [],
       favourite_photos: [],
-      searchInput: ""
+      searchInput: "cat"
     }
   },
   mounted() {
@@ -36,6 +40,7 @@ export default {
     addToFavourites(item){
       try{
         this.favourite_photos.push(item)
+        console.log(this.favourite_photos)
         return true
       }catch (e) {
         console.log(e)
