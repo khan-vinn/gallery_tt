@@ -4,10 +4,10 @@
     <button @click="searchPhotos()">Search</button>
   </div>
   <div class="content">
-    <div class="photos">
-      <div v-for="photo  in this.randomPhotos" :key="photo">
-       <div @click="addToFavourites(photo)"> {{photo.user.id}} </div>
-        <img :src=photo.urls.small>
+    <div class="photos" v-if="randomPhotos?.length>0">
+      <div v-for="photo  in randomPhotos" :key="photo">
+        <div @click="addToFavourite(photo)"> {{ photo.user.id }}</div>
+        <img :src=photo.urls.small :alt=photo.user.name>
       </div>
     </div>
   </div>
@@ -19,7 +19,7 @@ import config from "../config";
 
 export default {
   name: 'App',
-  data(){
+  data() {
     return {
       randomPhotos: [],
       favourite_photos: [],
@@ -30,32 +30,30 @@ export default {
     this.unsplash = createApi({
       accessKey: config.UNSPLASH_ACCESS_KEY
     })
-    this.unsplash.photos.getRandom({count:8}).then(data=> {
+    this.unsplash.photos.getRandom({count: 8}).then(data => {
       this.randomPhotos = data.response
-    }).catch(e=> {
+    }).catch(e => {
       console.log(e)
     })
   },
-  methods:{
-    addToFavourites(item){
-      try{
-        this.favourite_photos.push(item)
-        console.log(this.favourite_photos)
-        return true
-      }catch (e) {
-        console.log(e)
-        return false
-      }
+  methods: {
+    addToFavourite(item) {
+      console.log(item)
+      this.favourite_photos.push(item)
+      console.log(this.favourite_photos)
     },
-    searchPhotos(){
+    searchPhotos() {
       this.unsplash.search.getPhotos({
-        query:this.searchInput || "",
+        query: this.searchInput || "",
         perPage: 8
-      }).then(data=> {
-        this.randomPhotos = data.response
-      }).catch(e=> {
-        console.log(e)
       })
+          .then(data => {
+            console.log(data)
+            this.randomPhotos = data.response.results
+          })
+          .catch(e => {
+            console.log(e)
+          })
     }
   }
 }
